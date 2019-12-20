@@ -1,6 +1,10 @@
 # D&D Classes and stuff
 # from Archetypes import Rogue
 
+# TODO:
+#   Currently have no way for the Races to affect stats
+#   Finish the Rogue
+#   Proficiencies and Expertise
 #####################################################################
 import Archetypes
 

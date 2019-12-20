@@ -1,4 +1,3 @@
-
 class PC:
 
     # Constructor
@@ -9,10 +8,12 @@ class PC:
         self.level = level
         self.stats = stats
         self.mods = self.set_modifiers(stats)
-        self.initiative = self.mods[1]
+        self.proficiency = self.set_proficiency()
         self.languages = self.set_languages(race)
         self.features = []
+        self.initiative = self.mods[1]
 
+    # Sets the mods when the PC is created.
     @staticmethod
     def set_modifiers(stats):
         modifiers = [0, 0, 0, 0, 0, 0]
@@ -53,13 +54,26 @@ class PC:
                 modifiers[stat_index] = 10
         return modifiers
 
-    # Used for changing all stats at once.
+    # Sets the proficiency when the PC is created.
+    def set_proficiency(self):
+        if self.level < 5:
+            return 2
+        elif self.level < 9:
+            return 3
+        elif self.level < 13:
+            return 4
+        elif self.level < 17:
+            return 5
+        else:
+            return 6
+
+    # Sets the stats when the PC is created.
     def set_stats(self, stats):
         self.stats = stats
 
     # Used for when the PC is created.
     @staticmethod
-    def set_languages(race):
+    def set_languages(race):  # Gotta add the rest of the races
         if race == "Dwarf":
             languages = ['Common', 'Dwarfish']
         elif race == "Elf":
@@ -78,9 +92,32 @@ class PC:
     def add_language(self, language):
         self.languages.append(language)
 
+    def ability_score_improvement(self):
+        decision = ''
+        while decision not in ('A', 'a', 'B', 'b'):
+            decision = input(
+                "Ability Score Improvement!\n(A) Increase one stat by 2\t(B) Increase two stats by 1\n")
+        if decision in ('A', 'a'):
+            stat = -1
+            while stat not in (0, 1, 2, 3, 4, 5):
+                stat = int(input("Choose a stat to upgrade! (Choose a number)\n(0)Strength\n(1)Dexterity\n"
+                                 "(2)Constitution\n(3)Wisdom\n(4)Intelligence\n(5)Charisma\n"))
+            self.stats[stat] += 2
+        else:
+            stat = -1
+            while stat not in (0, 1, 2, 3, 4, 5):
+                stat = int(input("Choose the first stat to upgrade! (Choose a number)\n(0)Strength\n(1)Dexterity\n"
+                                 "(2)Constitution\n(3)Wisdom\n(4)Intelligence\n(5)Charisma\n"))
+            self.stats[stat] += 1
+            stat = -1
+            while stat not in (0, 1, 2, 3, 4, 5):
+                stat = int(input("Choose the second stat to upgrade! (Choose a number)\n(0)Strength\n(1)Dexterity\n"
+                                 "(2)Constitution\n(3)Wisdom\n(4)Intelligence\n(5)Charisma\n"))
+            self.stats[stat] += 1
+
     # Test method
     def introduce_self(self):
-        print("My name is " + self.name + ", I am a " + self.race, self.archetype + '.')
+        print("My name is " + self.name + ", I am a " + self.race, self.archetype + '.', "I'm level", self.level)
         print("My stats are:", self.stats)
         print("My mods are:", self.mods)
         print("My initiative is:", self.initiative)
