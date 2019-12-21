@@ -2,9 +2,11 @@
   <dictionary name="TealChain221">
     <words>
       <w>blindsense</w>
+      <w>cantrip</w>
       <w>cantrips</w>
       <w>mage</w>
       <w>pois</w>
+      <w>spellcasting</w>
     </words>
   </dictionary>
 </component>

@@ -9,9 +9,19 @@ class PC:
         self.stats = stats
         self.mods = self.set_modifiers(stats)
         self.proficiency = self.set_proficiency()
+        self.skillProficiencies = []
         self.languages = self.set_languages(race)
         self.features = []
         self.initiative = self.mods[1]
+        # Default Magic
+        self.canCast = False
+        self.spellcastingAbility = ''
+        self.spellLevel = 0  # Max spell level
+        self.spellSlots = {}  # Dictionary cuz different levels have different amount of slots
+        self.knownCantrips = 0
+        self.knownSpells = 0
+        self.cantrips = []
+        self.spells = []
 
     # Sets the mods when the PC is created.
     @staticmethod
@@ -92,6 +102,46 @@ class PC:
     def add_language(self, language):
         self.languages.append(language)
 
+    def setSkillProficiencies(self, profs):
+        for x in range(0, profs):
+            while True:
+                skill = input("Choose four from (A) Acrobatics, (B) Athletics, (C) Deception, (D) Insight, "
+                              "(E) Intimidation, (F) Investigation, (G) Perception, (H) Performance, (I) Persuasion, "
+                              "(J) Sleight of Hand, and (K) Stealth\n")
+                if skill in ('A', 'a'):
+                    self.skillProficiencies.append("Acrobatics")
+                    break
+                elif skill in ('B', 'b'):
+                    self.skillProficiencies.append("Athletics")
+                    break
+                elif skill in ('C', 'c'):
+                    self.skillProficiencies.append("Deception")
+                    break
+                elif skill in ('D', 'd'):
+                    self.skillProficiencies.append("Insight")
+                    break
+                elif skill in ('E', 'e'):
+                    self.skillProficiencies.append("Intimidation")
+                    break
+                elif skill in ('F', 'f'):
+                    self.skillProficiencies.append("Investigation")
+                    break
+                elif skill in ('G', 'g'):
+                    self.skillProficiencies.append("Perception")
+                    break
+                elif skill in ('H', 'h'):
+                    self.skillProficiencies.append("Performance")
+                    break
+                elif skill in ('I', 'i'):
+                    self.skillProficiencies.append("Persuasion")
+                    break
+                elif skill in ('J', 'j'):
+                    self.skillProficiencies.append("Sleight of Hand")
+                    break
+                elif skill in ('K', 'k'):
+                    self.skillProficiencies.append("Stealth")
+                    break
+
     def ability_score_improvement(self):
         decision = ''
         while decision not in ('A', 'a', 'B', 'b'):
@@ -122,4 +172,9 @@ class PC:
         print("My mods are:", self.mods)
         print("My initiative is:", self.initiative)
         print("My languages are:", self.languages)
+        print("My skill proficiencies are:", self.skillProficiencies)
         print("My features are:", self.features)
+        if self.canCast:
+            print("\nI can know", self.knownCantrips, "cantrips.")
+            print("I can know", self.knownSpells, "spells.")
+            # print("Spell slots:" + self.spellSlots)

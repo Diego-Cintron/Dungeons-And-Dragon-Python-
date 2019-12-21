@@ -8,11 +8,16 @@ class Rogue(PC):
         self.add_language("Thieves\' Cant")  # Adds the Rogue language. Fix the "".
         self.features.append("Sneak Attack (1d6)")
 
+        # Skill Proficiencies for Rogue
+        self.setSkillProficiencies(4)
+
         # Add all the things appropriate for their level.
         temp_level = self.level
         self.level = 0
         while self.level < temp_level:
             self.level_up()  # This is not the best way to do this...
+
+        # At the end, gotta prompt the user to add their spells/cantrips
 
     def increaseSneakAttackBonus(self):
         if self.level == 3:
@@ -53,7 +58,7 @@ class Rogue(PC):
 
         if self.level == 2:
             self.features.append("Cunning Action")
-        elif self.level == 3:  # Chooses their Archetype at Third level
+        elif self.level == 3:  # Chooses their Archetype at Third level and adds their stuff.
             self.increaseSneakAttackBonus()
 
             arch = ''
@@ -69,9 +74,18 @@ class Rogue(PC):
                 self.features.append("Assassinate")
             else:
                 self.archetype = "Arcane Trickster"
-                # Gotta add "Mage Hand Legerdemain" and Spells/Cantrips
+                self.canCast = True
+                self.spellcastingAbility = "Intelligence"
+                self.spellLevel = 1
+                self.spellSlots[1] = 2
+                self.knownCantrips = 3
+                self.knownSpells = 3
+                self.cantrips.append("Mage Hand Legerdemain")
         elif self.level == 4:
             self.ability_score_improvement()
+            if self.archetype == "Arcane Trickster":
+                self.spellSlots[1] = 3
+                self.knownSpells = 4
         elif self.level == 5:
             self.increaseSneakAttackBonus()
             self.features.append("Uncanny Dodge")
@@ -80,8 +94,15 @@ class Rogue(PC):
         elif self.level == 7:
             self.increaseSneakAttackBonus()
             self.features.append("Evasion")
+            if self.archetype == "Arcane Trickster":
+                self.spellLevel = 2
+                self.spellSlots[1] = 4
+                self.spellSlots[2] = 2
+                self.knownSpells = 5
         elif self.level == 8:
             self.ability_score_improvement()
+            if self.archetype == "Arcane Trickster":
+                self.knownSpells = 6
         elif self.level == 9:
             self.increaseSneakAttackBonus()
             if self.archetype == "Thief":
@@ -92,9 +113,15 @@ class Rogue(PC):
                 self.features.append("Magical Ambush")
         elif self.level == 10:
             self.ability_score_improvement()
+            if self.archetype == "Arcane Trickster":
+                self.knownCantrips = 4
+                self.knownSpells = 7
+                self.spellSlots[2] = 3
         elif self.level == 11:
             self.increaseSneakAttackBonus()
             self.features.append("Reliable Talent")
+            if self.archetype == "Arcane Trickster":
+                self.knownSpells = 8
         elif self.level == 12:
             self.ability_score_improvement()
         elif self.level == 13:
@@ -105,13 +132,21 @@ class Rogue(PC):
                 self.features.append("Impostor")
             else:
                 self.features.append("Versatile Trickster")
+                self.spellLevel = 3
+                self.knownSpells = 9
+                self.spellSlots[3] = 2
         elif self.level == 14:
             self.features.append("Blindsense")
+            if self.archetype == "Arcane Trickster":
+                self.knownSpells = 10
         elif self.level == 15:
             self.increaseSneakAttackBonus()
             self.features.append("Slippery Mind")
         elif self.level == 16:
             self.ability_score_improvement()
+            if self.archetype == "Arcane Trickster":
+                self.knownSpells = 11
+                self.spellSlots[3] = 3
         elif self.level == 17:
             self.increaseSneakAttackBonus()
             if self.archetype == "Thief":
@@ -125,6 +160,12 @@ class Rogue(PC):
         elif self.level == 19:
             self.increaseSneakAttackBonus()
             self.ability_score_improvement()
+            if self.archetype == "Arcane Trickster":
+                self.knownSpells = 12
+                self.spellLevel = 4
+                self.spellSlots[4] = 1
         elif self.level == 20:
             self.features.append("Stroke of Luck")
+            if self.archetype == "Arcane Trickster":
+                self.knownSpells = 13
         # This needs stuff added, obviously.
