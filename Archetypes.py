@@ -7,9 +7,7 @@ class Rogue(PC):
         super().__init__(name, race, archetype, level, stats)
         self.add_language("Thieves\' Cant")  # Adds the Rogue language. Fix the "".
         self.features.append("Sneak Attack (1d6)")
-
-        # Skill Proficiencies for Rogue
-        self.setSkillProficiencies(4)
+        self.expertise = []
 
         # Add all the things appropriate for their level.
         temp_level = self.level
@@ -17,8 +15,16 @@ class Rogue(PC):
         while self.level < temp_level:
             self.level_up()  # This is not the best way to do this...
 
+        # Updates mods based on new stats, if any. Should probably remove the first time the mods are set. Redundant.
+        self.mods = self.set_modifiers(self.stats)
+
+        # Skill Proficiencies for Rogue
+        self.chooseSkills(4)
+        self.chooseExpertise()  # Level 1 Rogue expertise.
+        self.set_skillProficiencies()
         # At the end, gotta prompt the user to add their spells/cantrips
 
+    # To be called in "level_up" at every odd level to increase the damage from Sneak Attack.
     def increaseSneakAttackBonus(self):
         if self.level == 3:
             bonus = "(1d6)"
@@ -52,8 +58,53 @@ class Rogue(PC):
             pos += 1
         self.features[pos] = "Sneak Attack " + new_bonus
 
+    # Prompts the User for two skills to have expertise on. Only applies to skills.
+    def chooseExpertise(self):
+        for x in range(2):
+            expertise = ''
+            while (expertise not in self.expertise) or (expertise not in self.skills):
+                expertise = input("Choose a skill from your skills to be have \'Expertise\' on.\n")
+                if (expertise not in self.expertise) and (expertise in self.skills):
+                    self.expertise.append(expertise)
+                else:
+                    print("Invalid Answer.")
+
+    # Overrides the default method because Rogue have expertise.
+    def set_skillProficiencies(self):
+        for skill in self.skills:
+            if skill == 'Athletics':
+                if skill in self.expertise:
+                    prof = self.mods[0] + (self.proficiencyBonus * 2)
+                else:
+                    prof = self.mods[0] + self.proficiencyBonus
+                self.skillProficiencies[skill] = prof
+            elif skill in ('Acrobatics', 'Sleight of Hand', 'Stealth'):
+                if skill in self.expertise:
+                    prof = self.mods[1] + (self.proficiencyBonus * 2)
+                else:
+                    prof = self.mods[1] + self.proficiencyBonus
+                self.skillProficiencies[skill] = prof
+            elif skill in ('Arcana', 'History', 'Investigation', 'Nature', 'Religion'):
+                if skill in self.expertise:
+                    prof = self.mods[3] + (self.proficiencyBonus * 2)
+                else:
+                    prof = self.mods[3] + self.proficiencyBonus
+                self.skillProficiencies[skill] = prof
+            elif skill in ('Animal Handling', 'Insight', 'Medicine', 'Perception', 'Survival'):
+                if skill in self.expertise:
+                    prof = self.mods[4] + (self.proficiencyBonus * 2)
+                else:
+                    prof = self.mods[4] + self.proficiencyBonus
+                self.skillProficiencies[skill] = prof
+            elif skill in ('Deception', 'Intimidation', 'Performance', 'Persuasion'):
+                if skill in self.expertise:
+                    prof = self.mods[5] + (self.proficiencyBonus * 2)
+                else:
+                    prof = self.mods[5] + self.proficiencyBonus
+                self.skillProficiencies[skill] = prof
+
     # Adds Features and stuff based on their level
-    def level_up(self):  # Missing "Expertise" and Third level archetype stuff
+    def level_up(self):  # Missing "Expertise"
         self.level += 1
 
         if self.level == 2:
@@ -72,7 +123,7 @@ class Rogue(PC):
                 self.archetype = "Assassin"
                 self.features.append("Bonus Proficiencies")  # Should maybe add to the proficiencies
                 self.features.append("Assassinate")
-            else:
+            elif arch in ('C', 'c'):
                 self.archetype = "Arcane Trickster"
                 self.canCast = True
                 self.spellcastingAbility = "Intelligence"
@@ -81,6 +132,8 @@ class Rogue(PC):
                 self.knownCantrips = 3
                 self.knownSpells = 3
                 self.cantrips.append("Mage Hand Legerdemain")
+            else:
+                print("Invalid Answer.")
         elif self.level == 4:
             self.ability_score_improvement()
             if self.archetype == "Arcane Trickster":
@@ -89,8 +142,8 @@ class Rogue(PC):
         elif self.level == 5:
             self.increaseSneakAttackBonus()
             self.features.append("Uncanny Dodge")
-        # elif self.level == 6:
-            #  Add another "Expertise"... But I never added the first level one
+        elif self.level == 6:
+            self.chooseExpertise()
         elif self.level == 7:
             self.increaseSneakAttackBonus()
             self.features.append("Evasion")

@@ -7,12 +7,14 @@ class PC:
         self.archetype = archetype
         self.level = level
         self.stats = stats
-        self.mods = self.set_modifiers(stats)
-        self.proficiency = self.set_proficiency()
-        self.skillProficiencies = []
+        self.mods = self.set_modifiers(stats)  # To be removed and change the method to a normal non-static one.
+        self.proficiencyBonus = self.set_proficiencyBonus()
+        self.skills = []
+        self.skillProficiencies = {}
         self.languages = self.set_languages(race)
         self.features = []
         self.initiative = self.mods[1]
+
         # Default Magic
         self.canCast = False
         self.spellcastingAbility = ''
@@ -65,7 +67,7 @@ class PC:
         return modifiers
 
     # Sets the proficiency when the PC is created.
-    def set_proficiency(self):
+    def set_proficiencyBonus(self):
         if self.level < 5:
             return 2
         elif self.level < 9:
@@ -102,45 +104,60 @@ class PC:
     def add_language(self, language):
         self.languages.append(language)
 
-    def setSkillProficiencies(self, profs):
+    def chooseSkills(self, profs):
         for x in range(0, profs):
             while True:
                 skill = input("Choose four from (A) Acrobatics, (B) Athletics, (C) Deception, (D) Insight, "
                               "(E) Intimidation, (F) Investigation, (G) Perception, (H) Performance, (I) Persuasion, "
                               "(J) Sleight of Hand, and (K) Stealth\n")
                 if skill in ('A', 'a'):
-                    self.skillProficiencies.append("Acrobatics")
+                    self.skills.append("Acrobatics")
                     break
                 elif skill in ('B', 'b'):
-                    self.skillProficiencies.append("Athletics")
+                    self.skills.append("Athletics")
                     break
                 elif skill in ('C', 'c'):
-                    self.skillProficiencies.append("Deception")
+                    self.skills.append("Deception")
                     break
                 elif skill in ('D', 'd'):
-                    self.skillProficiencies.append("Insight")
+                    self.skills.append("Insight")
                     break
                 elif skill in ('E', 'e'):
-                    self.skillProficiencies.append("Intimidation")
+                    self.skills.append("Intimidation")
                     break
                 elif skill in ('F', 'f'):
-                    self.skillProficiencies.append("Investigation")
+                    self.skills.append("Investigation")
                     break
                 elif skill in ('G', 'g'):
-                    self.skillProficiencies.append("Perception")
+                    self.skills.append("Perception")
                     break
                 elif skill in ('H', 'h'):
-                    self.skillProficiencies.append("Performance")
+                    self.skills.append("Performance")
                     break
                 elif skill in ('I', 'i'):
-                    self.skillProficiencies.append("Persuasion")
+                    self.skills.append("Persuasion")
                     break
                 elif skill in ('J', 'j'):
-                    self.skillProficiencies.append("Sleight of Hand")
+                    self.skills.append("Sleight of Hand")
                     break
                 elif skill in ('K', 'k'):
-                    self.skillProficiencies.append("Stealth")
+                    self.skills.append("Stealth")
                     break
+                else:
+                    print("Invalid Answer.")
+
+    def set_skillProficiencies(self):
+        for skill in self.skills:
+            if skill == 'Athletics':
+                self.skillProficiencies[skill] = self.mods[0] + self.proficiencyBonus
+            elif skill in ('Acrobatics', 'Sleight of Hand', 'Stealth'):
+                self.skillProficiencies[skill] = self.mods[1] + self.proficiencyBonus
+            elif skill in ('Arcana', 'History', 'Investigation', 'Nature', 'Religion'):
+                self.skillProficiencies[skill] = self.mods[3] + self.proficiencyBonus
+            elif skill in ('Animal Handling', 'Insight', 'Medicine', 'Perception', 'Survival'):
+                self.skillProficiencies[skill] = self.mods[4] + self.proficiencyBonus
+            elif skill in ('Deception', 'Intimidation', 'Performance', 'Persuasion'):
+                self.skillProficiencies[skill] = self.mods[5] + self.proficiencyBonus
 
     def ability_score_improvement(self):
         decision = ''
@@ -172,6 +189,7 @@ class PC:
         print("My mods are:", self.mods)
         print("My initiative is:", self.initiative)
         print("My languages are:", self.languages)
+        print("My skills are:", self.skills)
         print("My skill proficiencies are:", self.skillProficiencies)
         print("My features are:", self.features)
         if self.canCast:
