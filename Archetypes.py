@@ -7,22 +7,23 @@ class Rogue(PC):
         super().__init__(name, race, archetype, level, stats)
         self.add_language("Thieves\' Cant")  # Adds the Rogue language. Fix the "".
         self.features.append("Sneak Attack (1d6)")
+        # self.chooseSkills(4)  # Has to be before leveling up because level 6 expertise.
         self.expertise = []
 
         # Add all the things appropriate for their level.
         temp_level = self.level
         self.level = 0
         while self.level < temp_level:
-            self.level_up()  # This is not the best way to do this...
+            self.level_up()  # Maybe not the best way to do this, but I'm lazy and it works so...
 
-        # Updates mods based on new stats, if any. Should probably remove the first time the mods are set. Redundant.
-        self.mods = self.set_modifiers(self.stats)
+        # Updates the initiative now that the stats/mods have been changed from ASI. Maybe place somewhere else.
+        self.initiative = self.mods[1]
 
-        # Skill Proficiencies for Rogue
-        self.chooseSkills(4)
-        self.chooseExpertise()  # Level 1 Rogue expertise.
-        self.set_skillProficiencies()
-        # At the end, gotta prompt the user to add their spells/cantrips
+        # Skill Proficiencies for Rogue (Stays commented cuz it's annoying for testing)
+        # self.chooseExpertise()  # Level 1 Rogue expertise.
+        # self.set_skillProficiencies()
+
+        # At the end, gotta prompt the user to add their spells/cantrips.
 
     # To be called in "level_up" at every odd level to increase the damage from Sneak Attack.
     def increaseSneakAttackBonus(self):
@@ -104,8 +105,10 @@ class Rogue(PC):
                 self.skillProficiencies[skill] = prof
 
     # Adds Features and stuff based on their level
-    def level_up(self):  # Missing "Expertise"
+    def level_up(self):
         self.level += 1
+        self.set_modifiers()
+        self.set_maxHealth()
 
         if self.level == 2:
             self.features.append("Cunning Action")
@@ -128,7 +131,7 @@ class Rogue(PC):
                 self.canCast = True
                 self.spellcastingAbility = "Intelligence"
                 self.spellLevel = 1
-                self.spellSlots[1] = 2
+                self.spellSlots["Level 1"] = 2
                 self.knownCantrips = 3
                 self.knownSpells = 3
                 self.cantrips.append("Mage Hand Legerdemain")
@@ -137,20 +140,20 @@ class Rogue(PC):
         elif self.level == 4:
             self.ability_score_improvement()
             if self.archetype == "Arcane Trickster":
-                self.spellSlots[1] = 3
+                self.spellSlots["Level 1"] = 3
                 self.knownSpells = 4
         elif self.level == 5:
             self.increaseSneakAttackBonus()
             self.features.append("Uncanny Dodge")
-        elif self.level == 6:
-            self.chooseExpertise()
+        # elif self.level == 6:
+        #     self.chooseExpertise()
         elif self.level == 7:
             self.increaseSneakAttackBonus()
             self.features.append("Evasion")
             if self.archetype == "Arcane Trickster":
                 self.spellLevel = 2
-                self.spellSlots[1] = 4
-                self.spellSlots[2] = 2
+                self.spellSlots["Level 1"] = 4
+                self.spellSlots["Level 2"] = 2
                 self.knownSpells = 5
         elif self.level == 8:
             self.ability_score_improvement()
@@ -169,7 +172,7 @@ class Rogue(PC):
             if self.archetype == "Arcane Trickster":
                 self.knownCantrips = 4
                 self.knownSpells = 7
-                self.spellSlots[2] = 3
+                self.spellSlots["Level 2"] = 3
         elif self.level == 11:
             self.increaseSneakAttackBonus()
             self.features.append("Reliable Talent")
@@ -187,7 +190,7 @@ class Rogue(PC):
                 self.features.append("Versatile Trickster")
                 self.spellLevel = 3
                 self.knownSpells = 9
-                self.spellSlots[3] = 2
+                self.spellSlots["Level 3"] = 2
         elif self.level == 14:
             self.features.append("Blindsense")
             if self.archetype == "Arcane Trickster":
@@ -199,7 +202,7 @@ class Rogue(PC):
             self.ability_score_improvement()
             if self.archetype == "Arcane Trickster":
                 self.knownSpells = 11
-                self.spellSlots[3] = 3
+                self.spellSlots["Level 3"] = 3
         elif self.level == 17:
             self.increaseSneakAttackBonus()
             if self.archetype == "Thief":
@@ -216,7 +219,7 @@ class Rogue(PC):
             if self.archetype == "Arcane Trickster":
                 self.knownSpells = 12
                 self.spellLevel = 4
-                self.spellSlots[4] = 1
+                self.spellSlots["Level 4"] = 1
         elif self.level == 20:
             self.features.append("Stroke of Luck")
             if self.archetype == "Arcane Trickster":

@@ -3,17 +3,19 @@ class PC:
     # Constructor
     def __init__(self, name, race, archetype, level, stats):
         self.name = name
-        self.race = race
-        self.archetype = archetype
         self.level = level
+        self.race = race
         self.stats = stats
-        self.mods = self.set_modifiers(stats)  # To be removed and change the method to a normal non-static one.
+        self.languages = []
+        self.mods = []
+        self.set_raceDetails()  # Adds the race modifiers and languages.
+        self.archetype = archetype
         self.proficiencyBonus = self.set_proficiencyBonus()
         self.skills = []
         self.skillProficiencies = {}
-        self.languages = self.set_languages(race)
         self.features = []
-        self.initiative = self.mods[1]
+        self.speed = 30  # Most common speed. Any class that changes this will simply change it during initialization.
+        self.maxHealth = 3
 
         # Default Magic
         self.canCast = False
@@ -25,12 +27,11 @@ class PC:
         self.cantrips = []
         self.spells = []
 
-    # Sets the mods when the PC is created.
-    @staticmethod
-    def set_modifiers(stats):
+    # Sets the mods for the PC. To be used after the Ability Score Improvements.
+    def set_modifiers(self):
         modifiers = [0, 0, 0, 0, 0, 0]
         stat_index = -1
-        for stat in stats:
+        for stat in self.stats:
             stat_index += 1
             if stat == 0 or stat == 1:
                 modifiers[stat_index] = -5
@@ -64,7 +65,7 @@ class PC:
                 modifiers[stat_index] = 9
             else:
                 modifiers[stat_index] = 10
-        return modifiers
+        self.mods = modifiers
 
     # Sets the proficiency when the PC is created.
     def set_proficiencyBonus(self):
@@ -79,31 +80,78 @@ class PC:
         else:
             return 6
 
-    # Sets the stats when the PC is created.
-    def set_stats(self, stats):
-        self.stats = stats
+    # Sets the PC's languages and race bonuses (Not counting features). Used for when the PC is created.
+    def set_raceDetails(self):
+        for x in range(6):  # Sets all the mods to 0 by default so I only have to add the ones that actually change.
+            self.mods.append(0)
 
-    # Used for when the PC is created.
-    @staticmethod
-    def set_languages(race):  # Gotta add the rest of the races
-        if race == "Dwarf":
-            languages = ['Common', 'Dwarfish']
-        elif race == "Elf":
-            languages = ['Common', 'Elvish']
-        elif race == "Hafling":
-            languages = ['Common', 'Goblin']
-        # elif race == "Human":
-        #     lang = input("Choose a language: ")
-        #     languages = ['Common', lang]
+        if self.race == "Dwarf (Hill)":
+            self.languages = ['Common', 'Dwarvish']
+            self.stats[2] += 2
+            self.stats[4] += 1
+        elif self.race == "Dwarf (Mountain)":
+            self.languages = ['Common', 'Dwarvish']
+            self.stats[0] += 2
+            self.stats[2] += 2
+        elif self.race == "Dragonborn":
+            self.languages = ['Common', 'Draconic']
+            self.stats[0] += 2
+            self.stats[5] += 1
+        elif self.race == "Elf (Drow)":
+            self.languages = ['Common', 'Elvish']
+            self.stats[1] += 2
+            self.stats[5] += 1
+        elif self.race == "Elf (Eladrin, High)":
+            lang = input("Choose an extra language: ")
+            self.languages = ['Common', 'Elvish', lang]
+            self.stats[1] += 2
+            self.stats[3] += 1
+        elif self.race == "Elf (Wood)":
+            self.languages = ['Common', 'Elvish']
+            self.stats[1] += 2
+            self.stats[4] += 1
+        elif self.race == "Gnome (Deep, Forest)":
+            self.languages = ['Common', 'Gnomish']
+            self.stats[1] += 1
+            self.stats[3] += 2
+        elif self.race == "Gnome (Rock)":
+            self.languages = ['Common', 'Gnomish']
+            self.stats[2] += 1
+            self.stats[3] += 2
+        elif self.race == "Halfling (Lightfoot)":
+            self.languages = ['Common', 'Halfling']
+            self.stats[1] += 2
+            self.stats[5] += 1
+        elif self.race == "Halfling (Stout)":
+            self.languages = ['Common', 'Halfling']
+            self.stats[1] += 2
+            self.stats[2] += 1
+        elif self.race == "Half-Elf":
+            lang = input("Choose an extra language: ")
+            self.languages = ['Common', 'Elvish', lang]
+            self.stats[5] += 2
+            # Also something else I don't understand :P
+        elif self.race == "Half-Orc":
+            self.languages = ['Common', 'Orc']
+            self.stats[0] += 2
+            self.stats[2] += 1
+        elif self.race == "Human":
+            lang = input("Choose an extra language: ")
+            self.languages = ['Common', lang]
+            for x in range(6):
+                self.stats[x] += 1
+        elif self.race == "Tiefling":
+            self.languages = ['Common', 'Infernal']
+            self.stats[3] += 1
+            self.stats[5] += 2
         else:
             return ['Common']
 
-        return languages
-
-    # Adds a known language to the PC.
+    # Adds a known language to the PC. Not the most useful method since it doesn't really save any lines.
     def add_language(self, language):
         self.languages.append(language)
 
+    # Chooses the skills during the Archetype initialization since it depends on the class.
     def chooseSkills(self, profs):
         for x in range(0, profs):
             while True:
@@ -146,6 +194,7 @@ class PC:
                 else:
                     print("Invalid Answer.")
 
+    # After the skills are chosen, this edits the self.skillProficiencies to be a dict of the Skills' Modifier
     def set_skillProficiencies(self):
         for skill in self.skills:
             if skill == 'Athletics':
@@ -159,6 +208,7 @@ class PC:
             elif skill in ('Deception', 'Intimidation', 'Performance', 'Persuasion'):
                 self.skillProficiencies[skill] = self.mods[5] + self.proficiencyBonus
 
+    # To be used in specific levels to increase stats.
     def ability_score_improvement(self):
         decision = ''
         while decision not in ('A', 'a', 'B', 'b'):
@@ -182,17 +232,21 @@ class PC:
                                  "(2)Constitution\n(3)Wisdom\n(4)Intelligence\n(5)Charisma\n"))
             self.stats[stat] += 1
 
+    def set_maxHealth(self):
+        self.maxHealth += 5 + self.mods[2]
+
     # Test method
     def introduce_self(self):
         print("My name is " + self.name + ", I am a " + self.race, self.archetype + '.', "I'm level", self.level)
         print("My stats are:", self.stats)
         print("My mods are:", self.mods)
-        print("My initiative is:", self.initiative)
+        print("My Health is:", self.maxHealth, "| My initiative is:", self.initiative)
         print("My languages are:", self.languages)
         print("My skills are:", self.skills)
         print("My skill proficiencies are:", self.skillProficiencies)
         print("My features are:", self.features)
         if self.canCast:
-            print("\nI can know", self.knownCantrips, "cantrips.")
+            print("\nMy spellcasting ability is:", self.spellcastingAbility)
+            print("I can know", self.knownCantrips, "cantrips.")
             print("I can know", self.knownSpells, "spells.")
-            # print("Spell slots:" + self.spellSlots)
+            print("Spell slots:", self.spellSlots)
