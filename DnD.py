@@ -5,6 +5,7 @@
 #   Make it so you cant repeat skills/skillProficiencies
 
 # TODO:
+#   Make it so you can't have stats over 20.
 #   Saving Throws & Death Saves
 #   Passive Perception
 #   Armor Class
@@ -22,8 +23,9 @@
 #   -- I noticed that when I call the PlayerCharacter and it's child classes, I specify an Archetype but when I make
 #   -- the character, I already call the Archetype directly. It's redundant. I would remove it if I'm to later make the
 #   -- entire PC creation via asking for inputs, it might be more useful to keep it as is.
+#   ^^ To fix this, I suggest making a new method that asks the user for their class and base it off that.
 #####################################################################
 import Archetypes
 
-Diego = Archetypes.Rogue("Indigo", "Human", "Rogue", 1, [13, 15, 8, 10, 12, 14])
+Diego = Archetypes.Rogue("Indigo", "Elf (Eladrin, High)", 2, [14, 15, 13, 10, 8, 12])
 Diego.introduce_self()

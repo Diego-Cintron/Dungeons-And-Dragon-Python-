@@ -3,11 +3,12 @@ from PlayerCharacter import PC
 
 class Rogue(PC):
 
-    def __init__(self, name, race, archetype, level, stats):
-        super().__init__(name, race, archetype, level, stats)
+    def __init__(self, name, race, level, stats):
+        super().__init__(name, race, level, stats)
+        self.archetype = "Rogue"
         self.add_language("Thieves\' Cant")  # Adds the Rogue language. Fix the "".
         self.features.append("Sneak Attack (1d6)")
-        # self.chooseSkills(4)  # Has to be before leveling up because level 6 expertise.
+        self.chooseSkills(4)  # Has to be before leveling up because level 6 expertise.
         self.expertise = []
 
         # Add all the things appropriate for their level.
@@ -20,8 +21,8 @@ class Rogue(PC):
         self.initiative = self.mods[1]
 
         # Skill Proficiencies for Rogue (Stays commented cuz it's annoying for testing)
-        # self.chooseExpertise()  # Level 1 Rogue expertise.
-        # self.set_skillProficiencies()
+        self.chooseExpertise()  # Level 1 Rogue expertise.
+        self.set_skill_proficiencies()
 
         # At the end, gotta prompt the user to add their spells/cantrips.
 
@@ -71,7 +72,7 @@ class Rogue(PC):
                     print("Invalid Answer.")
 
     # Overrides the default method because Rogue have expertise.
-    def set_skillProficiencies(self):
+    def set_skill_proficiencies(self):
         for skill in self.skills:
             if skill == 'Athletics':
                 if skill in self.expertise:

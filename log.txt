@@ -11,3 +11,8 @@ Started this log as of 2019/12/22
     - Added comments and tried to keep some consistency on them. (8:03pm)
     - Added speed in PC but it's a generic speed that can be changed (8:09pm)
     - Added HP. At least, I added it to my understanding. Gotta see what the "Hit Dice" is. (8:23pm)
+
+2020/01/29:
+    - 5:56pm
+    - Took a moment to analyze this code... It's kinda unmotivating to see it :L
+    - No longer needs to specify the Class when creating the PC since it is already specify when you call Rogue().

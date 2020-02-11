@@ -1,7 +1,7 @@
 class PC:
 
     # Constructor
-    def __init__(self, name, race, archetype, level, stats):
+    def __init__(self, name, race, level, stats):
         self.name = name
         self.level = level
         self.race = race
@@ -9,7 +9,7 @@ class PC:
         self.languages = []
         self.mods = []
         self.set_raceDetails()  # Adds the race modifiers and languages.
-        self.archetype = archetype
+        self.archetype = None
         self.proficiencyBonus = self.set_proficiencyBonus()
         self.skills = []
         self.skillProficiencies = {}
@@ -195,7 +195,7 @@ class PC:
                     print("Invalid Answer.")
 
     # After the skills are chosen, this edits the self.skillProficiencies to be a dict of the Skills' Modifier
-    def set_skillProficiencies(self):
+    def set_skill_proficiencies(self):
         for skill in self.skills:
             if skill == 'Athletics':
                 self.skillProficiencies[skill] = self.mods[0] + self.proficiencyBonus
@@ -210,6 +210,8 @@ class PC:
 
     # To be used in specific levels to increase stats.
     def ability_score_improvement(self):
+        print("Stats: ")
+        print(self.stats)
         decision = ''
         while decision not in ('A', 'a', 'B', 'b'):
             decision = input(
