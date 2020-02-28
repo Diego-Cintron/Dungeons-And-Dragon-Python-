@@ -10,6 +10,7 @@ class PC:
         self.mods = []
         self.set_raceDetails()  # Adds the race modifiers and languages.
         self.archetype = None
+        self.subclass = None
         self.proficiencyBonus = self.set_proficiencyBonus()
         self.skills = []
         self.skillProficiencies = {}
@@ -20,7 +21,7 @@ class PC:
         # Default Magic
         self.canCast = False
         self.spellcastingAbility = ''
-        self.spellLevel = 0  # Max spell level
+        self.spellLevel = 0  # Max castable spell level. Really only applies when taking multiclass into consideration.
         self.spellSlots = {}  # Dictionary cuz different levels have different amount of slots
         self.knownCantrips = 0
         self.knownSpells = 0
@@ -234,6 +235,7 @@ class PC:
                                  "(2)Constitution\n(3)Wisdom\n(4)Intelligence\n(5)Charisma\n"))
             self.stats[stat] += 1
 
+    # Only works for non-multiclass.
     def set_maxHealth(self):
         self.maxHealth += 5 + self.mods[2]
 

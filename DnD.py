@@ -12,6 +12,7 @@
 #   Alignment
 #   Background
 #   Race Features
+#   Make the skill proficiencies depend on your class
 #   Prompt the user for Cantrips/Spells
 #   -- Rogue
 

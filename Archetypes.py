@@ -17,8 +17,10 @@ class Rogue(PC):
         while self.level < temp_level:
             self.level_up()  # Maybe not the best way to do this, but I'm lazy and it works so...
 
-        # Updates the initiative now that the stats/mods have been changed from ASI. Maybe place somewhere else.
+        # Updates stat stuff now that the stats/mods have been changed from ASI. Maybe place somewhere else.
         self.initiative = self.mods[1]
+        self.set_modifiers()
+        self.set_maxHealth()
 
         # Skill Proficiencies for Rogue (Stays commented cuz it's annoying for testing)
         self.chooseExpertise()  # Level 1 Rogue expertise.
@@ -26,7 +28,7 @@ class Rogue(PC):
 
         # At the end, gotta prompt the user to add their spells/cantrips.
 
-    # To be called in "level_up" at every odd level to increase the damage from Sneak Attack.
+    # To be called in "level_up" at every odd level to increase the damage from Sneak Attack. (Cant maybe be improved)
     def increaseSneakAttackBonus(self):
         if self.level == 3:
             bonus = "(1d6)"
@@ -108,8 +110,6 @@ class Rogue(PC):
     # Adds Features and stuff based on their level
     def level_up(self):
         self.level += 1
-        self.set_modifiers()
-        self.set_maxHealth()
 
         if self.level == 2:
             self.features.append("Cunning Action")
@@ -226,3 +226,104 @@ class Rogue(PC):
             if self.archetype == "Arcane Trickster":
                 self.knownSpells = 13
         # This needs stuff added, obviously.
+
+
+class Fighter(PC):
+    def __init__(self, name, race, level, stats):
+        super().__init__(name, race, level, stats)
+        self.archetype = "Fighter"
+        self.chooseSkills(2)
+
+        # Sets level-related stuff
+        temp_level = self.level
+        self.level = 0
+        while self.level < temp_level:
+            self.level_up()  # Maybe not the best way to do this, but I'm lazy and it works so...
+
+    def set_fighting_style(self):
+        x = "0"
+        while x not in ("1", "2", "3", "4", "5", "6"):
+            print("Fighting Style Options: \n(1) Archery: You gain a +2 bonus to attack rolls you make with ranged "
+                  "weapons.")
+            print("(2) Defense: While you are wearing armor, you gain a +1 bonus to AC.")
+            print("(3) Dueling: When you are wielding a melee weapon in one hand and no other weapons, you gain a +2 "
+                  "bonus to damage rolls with that weapon.")
+            print("(4) Great Weapon Fighting: W hen you roll a 1 or 2 on a damage die for an attack you make with a"
+                  "melee weapon that you are wielding with two hands, you can reroll the die and must use the new "
+                  "roll, even if the new roll is a 1 or a 2. The weapon must have the two-handed or versatile "
+                  "property for you to gain this benefit.")
+            print("(5) Protection: When a creature you can see attacks a target other than you that is within"
+                  " 5 feet of you, you can use your reaction to impose disadvantage on the attack roll."
+                  " You must be wielding a shield.")
+            print("(6) Two-Weapon Fighting: When you engage in two-weapon fighting, you can add your ability"
+                  " modifier to the damage of the second attack.")
+            x = input("Pick a number\n")
+
+        if x == "1":
+            self.features.append('Fighting Style: Archery')
+        elif x == "2":
+            self.features.append('Fighting Style: Defense')
+        elif x == "3":
+            self.features.append('Fighting Style: Dueling')
+        elif x == "4":
+            self.features.append('Fighting Style: Great Weapon Fighting')
+        elif x == "5":
+            self.features.append('Fighting Style: Protection')
+        else:
+            self.features.append('Fighting Style: Two-Weapon Fighting')
+
+    def set_subclass(self):
+        x = 0
+        while x not in (1, 2, 3):
+            x = int(input("Pick a Subclass: (1) Champion, (2) Battle Master, (3) Eldritch Knight"))
+        if x == 1:
+            self.subclass = "Champion"
+        elif x == 2:
+            self.subclass = "Battle Master"
+        else:
+            self.subclass = "Eldritch Knight"
+
+    def level_up(self):
+        self.level += 1
+
+        if self.level == 1:
+            self.set_fighting_style()
+            self.features.append('Second Wind')
+        elif self.level == 2:
+            self.features.append('Action Surge (1)')
+        elif self.level == 3:
+            self.set_subclass()
+            if self.subclass == "Champion":
+                self.features.append('Improved Critical')
+            elif self.subclass == "Battle Master":
+                self.features.append('Combat Superiority')  # Unfinished
+                self.features.append('Student of War')
+            else:
+                self.features.append('Weapon Bond')
+                self.canCast = True
+                self.spellcastingAbility = "Intelligence"
+                self.spellLevel = 1
+                self.knownCantrips = 2
+                self.knownSpells = 3
+                self.spellSlots = 2
+        elif self.level == 4:
+            self.ability_score_improvement()
+        elif self.level == 5:
+            self.features.append('Extra Attack')
+        elif self.level == 6:
+            self.ability_score_improvement()
+        elif self.level == 7:
+            y = 1
+        elif self.level == 8:
+            self.ability_score_improvement()
+        elif self.level == 9:
+            self.features.append('Indomitable (1)')
+        elif self.level == 10:
+            y == 1
+        elif self.level == 11:
+            if self.subclass == "Battle Master":
+                self.features[5] == 'Extra Attack (2)'
+            else:
+                self.features[4] == 'Extra Attack (2)'
+        elif self.features == 12:
+            self.ability_score_improvement()
