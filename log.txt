@@ -22,3 +22,7 @@ Started this log as of 2019/12/22
     - Made Axel today and felt more motivated to work on Fighter so I'm starting on that
     - Got done with a lot more than I expected. Now that I did began another class it should make it easier for future
     classes. Approximately half-way through Fighter. (12:24am)
+
+2020/02/28:
+    - 10:22am
+    - Pulled the repository into my VS Code in VM :).
